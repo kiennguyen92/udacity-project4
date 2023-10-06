@@ -1,0 +1,89 @@
+name: Backend Continuous Deployment
+on:
+  pull_request:
+    branches:    
+      - main
+  workflow_dispatch:
+
+env: 
+  WORK_DIR: starter/backend
+  REPO: 330073786310.dkr.ecr.us-east-1.amazonaws.com/backend
+jobs:
+  lint:
+    runs-on: ubuntu-lastest
+    steps: 
+
+      # Checkout code
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Change to work directory
+      run: cd ${{ env.WORK_DIR }}
+
+      # Setup NodeJS
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10' 
+      
+      # Install dependencies
+    - name: Install pipenv
+      run: pip install pipenv
+
+    - name: Install package
+      run: pipenv install --dev
+      
+      # Lint
+    - name: Lint
+      run: pipenv run lint
+  
+  test:
+    runs-on: ubuntu-lastest
+    steps: 
+
+      # Checkout code
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Change to work directory
+      run: cd ${{ env.WORK_DIR }}
+
+      # Setup Python
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10' 
+      
+      # Install dependencies
+    - name: Install pipenv
+      run: pip install pipenv
+
+    - name: Install package
+      run: pipenv install --dev
+      
+      # Test
+    - name: Test
+      run: pipenv run test
+
+  build:
+    runs-on: ubuntu-lastest
+    needs:
+    - lint
+    - test
+    steps: 
+
+      # Checkout code
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Change to work directory
+      run: cd ${{ env.WORK_DIR }}
+
+      # Build
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        push: true
+        tags:  ${{REPO}}:${{github.sha}}

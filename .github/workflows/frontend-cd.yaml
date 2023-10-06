@@ -1,4 +1,4 @@
-name: Frontend Continuous Integration
+name: Frontend Continuous Deployment
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
 env: 
   NODE_VERSION: 18
   WORK_DIR: starter/frontend
-  REPO: 
-  
+  REPO: 330073786310.dkr.ecr.us-east-1.amazonaws.com/frontend
+
 jobs:
   lint:
     runs-on: ubuntu-lastest
@@ -77,9 +77,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
     - name: Change to work directory
       run: cd ${{ env.WORK_DIR }}
 
       # Build
-    - name: Build 
-      run: docker build -f Dockerfile .
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        push: true
+        tags:  ${{REPO}}:${{github.sha}}
+        build-args: REACT_APP_MOVIE_API_URL=abc
