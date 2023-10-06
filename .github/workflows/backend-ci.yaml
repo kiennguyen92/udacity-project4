@@ -1,5 +1,4 @@
 name: Backend Continuous Integration
-
 on:
   pull_request:
     branches:    
@@ -37,7 +36,7 @@ jobs:
     - name: Lint
       run: pipenv run lint
   
-  lint:
+  test:
     runs-on: ubuntu-lastest
     steps: 
 
@@ -60,8 +59,8 @@ jobs:
     - name: Install package
       run: pipenv install --dev
       
-      # Lint
-    - name: Lint
+      # Test
+    - name: Test
       run: pipenv run test
 
   build:
