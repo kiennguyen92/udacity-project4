@@ -16,7 +16,7 @@ jobs:
       # Checkout code
     - name: Checkout
       uses: actions/checkout@v4
-
+    - run: ls 
     - name: Change to work directory
       run: cd ${{ env.WORK_DIR }}
 
