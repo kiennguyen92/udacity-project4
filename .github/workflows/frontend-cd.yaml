@@ -88,5 +88,5 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: true
-        tags:  ${{REPO}}:${{github.sha}}
+        tags:  ${{env.REPO}}:${{github.sha}}
         build-args: REACT_APP_MOVIE_API_URL=abc

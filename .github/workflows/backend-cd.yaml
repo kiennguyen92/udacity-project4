@@ -85,4 +85,4 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         push: true
-        tags:  ${{REPO}}:${{github.sha}}
+        tags:  ${{env.REPO}}:${{github.sha}}
