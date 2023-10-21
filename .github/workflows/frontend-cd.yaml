@@ -10,6 +10,7 @@ env:
   NODE_VERSION: 18
   WORK_DIR: starter/frontend
   REPO: 330073786310.dkr.ecr.us-east-1.amazonaws.com/frontend
+  REACT_APP_MOVIE_API_URL: project4.io
 
 jobs:
   lint:
@@ -57,6 +58,7 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION}}
         cache: 'npm'
+        cache-dependency-path: "${{ env.WORK_DIR }}/package.json"
 
       # Install dependencies
     - name: Install dependencies
@@ -89,4 +91,4 @@ jobs:
       with:
         push: true
         tags:  ${{env.REPO}}:${{github.sha}}
-        build-args: REACT_APP_MOVIE_API_URL=abc
+        build-args: REACT_APP_MOVIE_API_URL=${{env.REACT_APP_MOVIE_API_URL}}
