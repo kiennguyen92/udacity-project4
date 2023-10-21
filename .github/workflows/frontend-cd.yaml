@@ -13,7 +13,7 @@ env:
 
 jobs:
   lint:
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest
     steps: 
 
       # Checkout code
@@ -40,7 +40,7 @@ jobs:
       run: npm run lint
   
   test:
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest
     steps: 
 
       # Checkout code
@@ -67,7 +67,7 @@ jobs:
       run: npm run test
 
   build:
-    runs-on: ubuntu-lastest
+    runs-on: ubuntu-latest
     needs:
     - lint
     - test
