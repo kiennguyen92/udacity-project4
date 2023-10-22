@@ -1,97 +1,97 @@
-name: Backend Continuous Deployment
-on:
-  push:
-    branches:    
-      - main
-  workflow_dispatch:
+# name: Backend Continuous Deployment
+# on:
+#   push:
+#     branches:    
+#       - main
+#   workflow_dispatch:
 
-env: 
-  WORK_DIR: starter/backend
-  REPO: 330073786310.dkr.ecr.us-east-1.amazonaws.com/backend
-jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps: 
+# env: 
+#   WORK_DIR: starter/backend
+#   REPO: 330073786310.dkr.ecr.us-east-1.amazonaws.com/backend
+# jobs:
+#   lint:
+#     runs-on: ubuntu-latest
+#     steps: 
 
-      # Checkout code
-    - name: Checkout
-      uses: actions/checkout@v4
+#       # Checkout code
+#     - name: Checkout
+#       uses: actions/checkout@v3
       
-    - name: Change to work directory
-      run: cd ${{ env.WORK_DIR }}
+#     - name: Change to work directory
+#       run: cd ${{ env.WORK_DIR }}
 
-      # Setup NodeJS
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.10' 
+#       # Setup NodeJS
+#     - uses: actions/setup-python@v4
+#       with:
+#         python-version: '3.10' 
       
-      # Install dependencies
-    - name: Install pipenv
-      run: pip install pipenv
+#       # Install dependencies
+#     - name: Install pipenv
+#       run: pip install pipenv
 
-    - name: Install package
-      run: pipenv install --dev
+#     - name: Install package
+#       run: pipenv install --dev
       
-      # Lint
-    - name: Lint
-      run: pipenv run lint
+#       # Lint
+#     - name: Lint
+#       run: pipenv run lint
   
-  test:
-    runs-on: ubuntu-latest
-    steps: 
+#   test:
+#     runs-on: ubuntu-latest
+#     steps: 
 
-      # Checkout code
-    - name: Checkout
-      uses: actions/checkout@v4
+#       # Checkout code
+#     - name: Checkout
+#       uses: actions/checkout@v4
 
-    - name: Change to work directory
-      run: cd ${{ env.WORK_DIR }}
+#     - name: Change to work directory
+#       run: cd ${{ env.WORK_DIR }}
 
-      # Setup Python
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.10' 
+#       # Setup Python
+#     - uses: actions/setup-python@v4
+#       with:
+#         python-version: '3.10' 
       
-      # Install dependencies
-    - name: Install pipenv
-      run: pip install pipenv
+#       # Install dependencies
+#     - name: Install pipenv
+#       run: pip install pipenv
 
-    - name: Install package
-      run: pipenv install --dev
+#     - name: Install package
+#       run: pipenv install --dev
       
-      # Test
-    - name: Test
-      run: pipenv run test
+#       # Test
+#     - name: Test
+#       run: pipenv run test
 
-  build:
-    runs-on: ubuntu-latest
-    needs:
-    - lint
-    - test
-    steps: 
+#   build:
+#     runs-on: ubuntu-latest
+#     needs:
+#     - lint
+#     - test
+#     steps: 
 
-      # Checkout code
-    - name: Checkout
-      uses: actions/checkout@v4
+#       # Checkout code
+#     - name: Checkout
+#       uses: actions/checkout@v4
 
-    - name: Login to Amazon ECR
-      uses: aws-actions/amazon-ecr-login@v2
+#     - name: Login to Amazon ECR
+#       uses: aws-actions/amazon-ecr-login@v2
 
-    - name: Change to work directory
-      run: cd ${{ env.WORK_DIR }}
+#     - name: Change to work directory
+#       run: cd ${{ env.WORK_DIR }}
 
-      # Build
-    - name: Build and push
-      uses: docker/build-push-action@v5
-      with:
-        push: true
-        tags:  ${{env.REPO}}:${{github.sha}}
-    - name: deploy to cluster
-      uses: kodermax/kubectl-aws-eks@main
-      env:
-        KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: backend
-        IMAGE_TAG: ${{ github.sha }}
-      with:
-        args: set image deployment/$ECR_REPOSITORY $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+#       # Build
+#     - name: Build and push
+#       uses: docker/build-push-action@v5
+#       with:
+#         push: true
+#         tags:  ${{env.REPO}}:${{github.sha}}
+#     - name: deploy to cluster
+#       uses: kodermax/kubectl-aws-eks@main
+#       env:
+#         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+#         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#         ECR_REPOSITORY: backend
+#         IMAGE_TAG: ${{ github.sha }}
+#       with:
+#         args: set image deployment/$ECR_REPOSITORY $ECR_REPOSITORY=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

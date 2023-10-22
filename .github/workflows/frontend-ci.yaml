@@ -1,7 +1,7 @@
 name: Frontend Continuous Integration
 
 on:
-  pull_request:
+  push:
     branches:    
       - main
   workflow_dispatch:
@@ -14,12 +14,9 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps: 
-
       # Checkout code
     - name: Checkout
-      uses: actions/checkout@v4
-    - name: Change to work directory
-      run: cd ${{ env.WORK_DIR }}
+      uses: actions/checkout@v3
 
       # Setup NodeJS
       # Perform a cache action to restore cache before dependency install
@@ -32,11 +29,11 @@ jobs:
 
       # Install dependencies
     - name: Install dependencies
-      run: npm ci
+      run: cd ${{ env.WORK_DIR }} && npm ci
 
       # Lint
     - name: Lint
-      run: npm run lint
+      run: cd ${{ env.WORK_DIR }} && npm run lint
   
   test:
     runs-on: ubuntu-latest
@@ -46,9 +43,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Change to work directory
-      run: cd ${{ env.WORK_DIR }}
-
       # Setup NodeJS
       # Perform a cache action to restore cache before dependency install
     - name: Setup NodeJS
@@ -56,14 +50,15 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION}}
         cache: 'npm'
+        cache-dependency-path: "${{ env.WORK_DIR }}/package.json"
 
       # Install dependencies
     - name: Install dependencies
-      run: npm ci
+      run: cd ${{ env.WORK_DIR }} && npm ci
 
       # Test
-    - name: Lint
-      run: npm run test
+    - name: Test
+      run: cd ${{ env.WORK_DIR }} && npm run test
 
   build:
     runs-on: ubuntu-latest
