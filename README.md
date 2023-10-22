@@ -410,3 +410,6 @@ kustomize build | kubectl apply -f -
 ## License
 
 [License](LICENSE.md)
+
+git config --global user.email "na"
+git config --global user.name "na"

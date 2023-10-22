@@ -78,4 +78,6 @@ jobs:
 
       # Build
     - name: Build 
-      run: docker build -f Dockerfile .
+      run: |
+        cd ${{ env.WORK_DIR }}
+        docker build -f Dockerfile .
