@@ -60,7 +60,7 @@ jobs:
     - name: Test
       run: |
         cd ${{ env.WORK_DIR }} 
-        npm run test --passWithNoTests
+        npm run test
 
   build:
     runs-on: ubuntu-latest
